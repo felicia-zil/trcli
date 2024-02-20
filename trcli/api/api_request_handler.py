@@ -302,6 +302,12 @@ class ApiRequestHandler:
                 for test_case in section.testcases:
                     if test_case.custom_automation_id in test_cases_by_aut_id.keys():
                         case = test_cases_by_aut_id[test_case.custom_automation_id]
+
+                        # Update Custom Case Fields: Reference / Test ID
+                        if 'refs' in test_case.to_dict() and 'custom_test_id' in test_case.to_dict():
+                            payload = {"case_id":case["id"], "refs": test_case.case_fields["refs"], "custom_test_id": test_case.case_fields["custom_test_id"]}
+                            response = self.client.send_post(f"update_case/{case['id']}", payload)
+
                         test_case_data.append({
                             "case_id": case["id"],
                             "section_id": case["section_id"],
